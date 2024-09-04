@@ -1,5 +1,5 @@
 # Build the Go binary
-FROM golang:1.20 AS build-stage
+FROM golang:1.23 AS build-stage
 
 WORKDIR /build
 COPY go.mod go.sum ./
