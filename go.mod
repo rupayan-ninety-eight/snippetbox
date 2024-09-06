@@ -1,3 +1,3 @@
 module github.com/rupayan-ninety-eight/snippetbox
 
-go 1.23
+go 1.23.1
