@@ -1,0 +1,17 @@
+# Config file for Air
+[build]
+    # Command to build the app
+    cmd = "CGO_ENABLED=0 GOOS=linux go build -o ./snippetbox -buildvcs=false"
+    # Binary to watch
+    bin = "snippetbox"
+    # Working directory
+    dir = "."
+    # Watch these filename extensions.
+    include_ext = ["go", "tpl", "tmpl", "html"]
+    # Ignore these filename extensions or directories.
+    exclude_dir = ["assets", "tmp", "vendor", "frontend/node_modules"]
+    # Command to run after build
+    run_after_build = "chmod +x snippetbox"
+
+[log]
+    level = "debug"
