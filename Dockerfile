@@ -11,4 +11,8 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o ./snippetbox
 FROM alpine:latest
 WORKDIR /app
 COPY --from=build-stage /build/snippetbox ./snippetbox
+
+# Expose the port the app runs on
+EXPOSE 4000
+
 CMD ["/app/snippetbox"]
