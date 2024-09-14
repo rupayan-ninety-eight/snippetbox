@@ -9,6 +9,7 @@ import (
 	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/rupayan-ninety-eight/snippetbox/internal/models"
 )
 
 var (
@@ -21,8 +22,9 @@ type config struct {
 }
 
 type application struct {
-	logger *slog.Logger
-	config config
+	config   config
+	logger   *slog.Logger
+	snippets *models.SnippetModel
 }
 
 func main() {
@@ -37,7 +39,7 @@ func main() {
 	dbPort := os.Getenv("MYSQL_PORT")
 	database := os.Getenv("MYSQL_DATABASE")
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, dbPort, database)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", user, password, host, dbPort, database)
 
 	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
 		AddSource: true,
@@ -63,8 +65,9 @@ func main() {
 	defer db.Close()
 
 	app := &application{
-		logger: logger,
-		config: cfg,
+		config:   cfg,
+		logger:   logger,
+		snippets: &models.SnippetModel{DB: db},
 	}
 
 	logger.Info("starting server", slog.Int("addr", cfg.addr))
