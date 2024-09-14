@@ -24,4 +24,7 @@ go.work.sum
 # env file
 .env
 
+# Ignore the build file
+snippetbox
+
 tmp
