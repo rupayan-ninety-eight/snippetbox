@@ -1,7 +1,7 @@
 # Config file for Air
 [build]
     # Command to build the app
-    cmd = "CGO_ENABLED=0 GOOS=linux go build -buildvcs=false -o ./snippetbox ./cmd/web"
+    cmd = "CGO_ENABLED=0 GOOS=linux go build -buildvcs=false -ldflags \"-X main.port=$CONTAINER_PORT\" -o ./snippetbox ./cmd/web"
     # Binary to watch
     bin = "snippetbox"
     # Working directory

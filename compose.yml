@@ -3,8 +3,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
+      args:
+        - CONTAINER_PORT=${CONTAINER_PORT}
     ports:
-      - "4000:4000"
+      - "${DEV_PORT}:${CONTAINER_PORT}"
     volumes:
       - ${PWD}:/app
 
@@ -12,5 +14,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.prod
+      args:
+        - CONTAINER_PORT=${CONTAINER_PORT}
     ports:
-      - "5000:4000"
+      - "${PROD_PORT}:${CONTAINER_PORT}"
