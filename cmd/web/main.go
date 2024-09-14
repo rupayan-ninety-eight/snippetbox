@@ -1,8 +1,9 @@
 package main
 
 import (
-	"log"
+	"log/slog"
 	"net/http"
+	"os"
 	"strconv"
 )
 
@@ -15,30 +16,39 @@ type config struct {
 	staticDir string
 }
 
+type application struct {
+	logger *slog.Logger
+	config config
+}
+
 func main() {
 	cfg := config{
 		addr:      4000,
 		staticDir: "./ui/static",
 	}
 
+	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+		AddSource: true,
+		Level:     slog.LevelDebug,
+	}))
+
 	if port != "" {
 		addr, err := strconv.Atoi(port)
 		if err != nil {
-			log.Fatalf("invalid port %v", err)
+			logger.Error("invalid port", "error", err.Error())
 		}
-		cfg.addr = addr
+		if err == nil {
+			cfg.addr = addr
+		}
 	}
 
-	fileServer := http.FileServer(http.Dir(cfg.staticDir))
+	app := &application{
+		logger: logger,
+		config: cfg,
+	}
 
-	mux := http.NewServeMux()
-	mux.Handle("GET /static/", http.StripPrefix("/static", fileServer))
-	mux.HandleFunc("GET /{$}", home)
-	mux.HandleFunc("GET /snippet/view/{id}", snippetView)
-	mux.HandleFunc("GET /snippet/create", snippetCreate)
-	mux.HandleFunc("POST /snippet/create", snippetCreatePost)
-
-	log.Printf("starting server on %d", cfg.addr)
-	err := http.ListenAndServe(":"+strconv.Itoa(cfg.addr), mux)
-	log.Fatal(err)
+	logger.Info("starting server", slog.Int("addr", cfg.addr))
+	err := http.ListenAndServe(":"+strconv.Itoa(cfg.addr), app.routes())
+	logger.Error(err.Error())
+	os.Exit(1)
 }
