@@ -9,6 +9,13 @@ services:
       - "${DEV_PORT}:${CONTAINER_PORT}"
     volumes:
       - ${PWD}:/app
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
 
   prod:
     build:
@@ -18,6 +25,13 @@ services:
         - CONTAINER_PORT=${CONTAINER_PORT}
     ports:
       - "${PROD_PORT}:${CONTAINER_PORT}"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
 
   db:
     image: mysql:9.0.1

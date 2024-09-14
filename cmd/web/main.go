@@ -1,10 +1,14 @@
 package main
 
 import (
+	"database/sql"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
 	"strconv"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var (
@@ -27,6 +31,14 @@ func main() {
 		staticDir: "./ui/static",
 	}
 
+	user := os.Getenv("MYSQL_USER")
+	password := os.Getenv("MYSQL_PASSWORD")
+	host := os.Getenv("MYSQL_HOST")
+	dbPort := os.Getenv("MYSQL_PORT")
+	database := os.Getenv("MYSQL_DATABASE")
+
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, dbPort, database)
+
 	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
 		AddSource: true,
 		Level:     slog.LevelDebug,
@@ -42,13 +54,36 @@ func main() {
 		}
 	}
 
+	db, err := openDB(dsn)
+	if err != nil {
+		logger.Error((err.Error()))
+		os.Exit(1)
+	}
+
+	defer db.Close()
+
 	app := &application{
 		logger: logger,
 		config: cfg,
 	}
 
 	logger.Info("starting server", slog.Int("addr", cfg.addr))
-	err := http.ListenAndServe(":"+strconv.Itoa(cfg.addr), app.routes())
+	err = http.ListenAndServe(":"+strconv.Itoa(cfg.addr), app.routes())
 	logger.Error(err.Error())
 	os.Exit(1)
+}
+
+func openDB(dsn string) (*sql.DB, error) {
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		return nil, err
+	}
+
+	err = db.Ping()
+	if err != nil {
+		db.Close()
+		return nil, err
+	}
+
+	return db, nil
 }
