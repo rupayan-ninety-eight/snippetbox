@@ -1,7 +1,7 @@
 # Config file for Air
 [build]
     # Command to build the app
-    cmd = "CGO_ENABLED=0 GOOS=linux go build -o ./snippetbox -buildvcs=false"
+    cmd = "CGO_ENABLED=0 GOOS=linux go build -buildvcs=false -o ./snippetbox ./cmd/web"
     # Binary to watch
     bin = "snippetbox"
     # Working directory
