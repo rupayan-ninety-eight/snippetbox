@@ -10,6 +10,7 @@ import (
 
 type templateData struct {
 	CurrentYear     int
+	CSRFToken       string
 	Flash           string
 	Form            any
 	IsAuthenticated bool
