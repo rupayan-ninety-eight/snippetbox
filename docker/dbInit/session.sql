@@ -1,3 +1,5 @@
+USE snippetbox;
+
 -- Create a `sessions` table.
 CREATE TABLE sessions (
     token CHAR(43) PRIMARY KEY,

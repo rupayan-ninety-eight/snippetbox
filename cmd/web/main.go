@@ -29,11 +29,12 @@ type config struct {
 
 type application struct {
 	config         config
-	formDecoder    *form.Decoder
 	logger         *slog.Logger
-	sessionManager *scs.SessionManager
 	snippets       *models.SnippetModel
+	users          *models.UserModel
 	templateCache  map[string]*template.Template
+	formDecoder    *form.Decoder
+	sessionManager *scs.SessionManager
 }
 
 func main() {
@@ -88,11 +89,12 @@ func main() {
 
 	app := &application{
 		config:         cfg,
-		formDecoder:    formDecoder,
 		logger:         logger,
-		sessionManager: sessionManager,
 		snippets:       &models.SnippetModel{DB: db},
+		users:          &models.UserModel{DB: db},
 		templateCache:  templateCache,
+		formDecoder:    formDecoder,
+		sessionManager: sessionManager,
 	}
 
 	tlsConfig := &tls.Config{
