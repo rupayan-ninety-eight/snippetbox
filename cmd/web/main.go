@@ -93,8 +93,15 @@ func main() {
 		templateCache:  templateCache,
 	}
 
+	srv := &http.Server{
+		Addr:     ":" + strconv.Itoa(cfg.addr),
+		Handler:  app.routes(),
+		ErrorLog: slog.NewLogLogger(logger.Handler(), slog.LevelError),
+	}
+
 	logger.Info("starting server", slog.Int("addr", cfg.addr))
-	err = http.ListenAndServe(":"+strconv.Itoa(cfg.addr), app.routes())
+
+	err = srv.ListenAndServe()
 	logger.Error(err.Error())
 	os.Exit(1)
 }
